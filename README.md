@@ -5,6 +5,9 @@ Prerequisite:
 Python and
 tesseract-ocr-setup
 
+Install Packages:
+OpenCv & pytesseract
+
 Syntax for run python file.
 python fileName --image "ImagePathDir"
 
