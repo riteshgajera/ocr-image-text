@@ -6,13 +6,13 @@ from testdata import TestData
 from data import Data
 
 UPLOAD_FOLDER = '/home/abhijitp/temp_files'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-@app.route('/')
+@app.route('/index')
 def index():
     # td = TestData()
     # data = td.get()
@@ -20,15 +20,17 @@ def index():
     data = request.args.get('data')
     print("#################")
     print(data)
-    print(data[0])
     # messages = request.args['messages']
     # return render_template("index.html", data=json.loads(messages))
     return render_template("index.html", data=data)
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -45,8 +47,11 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            td = TestData()
-            data = td.get()
+            data = Data()
+            # TODO Call the extract function and set result in response
+            text = TestData.extract(filename)
+            data.set('Filename', filename)
+            data.set('Extracted text', text)
             # return redirect(url_for('uploaded_file', filename=filename))
             # messages = json.dumps(data)
             # return redirect(url_for('index', messages=messages))
@@ -61,6 +66,7 @@ def upload_file():
           <input type=submit value=Upload>
         </form>
         '''
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
