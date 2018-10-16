@@ -1,0 +1,9 @@
+{% extends "master.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<h2> File: {{ data.get('Filename') }} </h2>
+<h3> Extracted text: {{ data.get('Extracted text') }}</h3>
+
+{% endblock %}
